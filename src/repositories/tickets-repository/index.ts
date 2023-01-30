@@ -21,6 +21,19 @@ async function getTickets(userId: number) {
   });
 }
 
+async function getTicketForPayment(userId: number) {
+  return prisma.ticket.findFirst({
+    where: {
+      Enrollment: {
+        userId: userId
+      }
+    },
+    include: {
+      TicketType: true
+    }
+  });
+}
+
 async function getTicketsTypeById(ticketId: number) {
   return prisma.ticketType.findUnique({ where: { id: ticketId } });
 }
@@ -49,7 +62,8 @@ const ticketsRepository = {
   getTicketsTypeById,
   postTicket,
   getEnrollment,
-  getTicketsById
+  getTicketsById,
+  getTicketForPayment
 };
 
 export default ticketsRepository;

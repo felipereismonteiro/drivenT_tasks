@@ -1,5 +1,5 @@
 import ticketsRepository from "@/repositories/tickets-repository";
-import { notFoundError } from "@/errors";
+import { conflictError, notFoundError } from "@/errors";
 import { TicketType } from "@prisma/client";
 
 async function getTicketsType() {
@@ -14,6 +14,13 @@ async function getTickets(userId: number) {
   if (!tickets) throw notFoundError();
 
   return tickets;
+}
+
+async function getTicketForPayment(userId: number) {
+  const ticket = await ticketsRepository.getTicketForPayment(userId);
+  if (!ticket) throw conflictError("user dont have own ticket");
+
+  return ticket;
 }
 
 async function getTicketTypeById(ticketId: number) {
@@ -49,7 +56,8 @@ const ticketsServices = {
   getTicketTypeById,
   createTicket,
   getEnrollment,
-  getTicketsById
+  getTicketsById,
+  getTicketForPayment
 };
 
 export default ticketsServices;
